@@ -16,34 +16,34 @@ export class TasksService {
     return this.tasks;
   }
 
-  getFilteredTasks(filterDTO: GetTaskFilterDTO) :TasksI[] {
-    const {search, status} = filterDTO;
+  getFilteredTasks(filterDTO: GetTaskFilterDTO): TasksI[] {
+    const { search, status } = filterDTO;
 
     let tasks = this.getAllTasks();
 
     if (status) {
-     tasks = this.tasks.filter(task => task.status === status)
+      tasks = this.tasks.filter(task => task.status === status);
     }
 
     if (search) {
-      tasks = this.tasks.filter(task => task.description.includes(search))
-     }
-    
-     return tasks;
+      tasks = this.tasks.filter(task => task.description.includes(search));
+    }
+
+    return tasks;
   }
-  
+
   getTaskById(id: string): TasksI {
     const found = this.tasks.find(task => task.id === id);
 
-    if(!found) {
-      throw new NotFoundException(`Task with ID { ${id} } not found`)
+    if (!found) {
+      throw new NotFoundException(`Task with ID { ${id} } not found`);
     }
 
     return found;
   }
 
   createTask(creteTaskDTO: CreateTaskDTO): TasksI {
-    const {title, description } = creteTaskDTO;
+    const { title, description } = creteTaskDTO;
 
     const task: TasksI = {
       id: uuid(),
@@ -58,13 +58,13 @@ export class TasksService {
   }
 
   deleteTask(id: string): void {
-    const found = this.getTaskById(id)
-    this.tasks = this.tasks.filter(task => task.id !== found.id)
+    const found = this.getTaskById(id);
+    this.tasks = this.tasks.filter(task => task.id !== found.id);
   }
 
   updateTask(id: string, status: TaskStatusE): TasksI {
-    const task = this.getTaskById(id) ;
-    task.status =  status;
-    return task
+    const task = this.getTaskById(id);
+    task.status = status;
+    return task;
   }
 }
