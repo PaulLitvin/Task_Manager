@@ -1,55 +1,56 @@
+import { Task } from './task.entity';
 import {
   Controller,
-  // Get,
-  // Post,
-  // Body,
-  // Param,
-  // Delete,
-  // Patch,
-  // Query,
-  // UsePipes,
-  // ValidationPipe,
+  Get,
+  Post,
+  Body,
+  Param,
+  Delete,
+  Patch,
+  Query,
+  UsePipes,
+  ValidationPipe,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { TasksService } from './tasks.service';
-// import { TasksI, TaskStatusE } from './task.model';
-// import { CreateTaskDTO } from './dto/create-task.dto';
-// import { GetTaskFilterDTO } from './dto/get-task-filter.dto';
-// import { TaskStatusValidationP } from './pipes/task-status-validation.pipe';
+import { TaskStatusE } from './task-status.enum';
+import { CreateTaskDTO } from './dto/create-task.dto';
+import { GetTaskFilterDTO } from './dto/get-task-filter.dto';
+import { TaskStatusValidationPipe } from './pipes/task-status-validation.pipe';
 
 @Controller('tasks')
 export class TasksController {
   constructor(private tasksService: TasksService) {}
 
-  // @Get()
-  // getTasks(@Query(ValidationPipe) filterDTO: GetTaskFilterDTO): TasksI[] {
-  //   if (Object.keys(filterDTO).length) {
-  //     return this.tasksService.getFilteredTasks(filterDTO);
-  //   }
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+  @Get()
+  async getTasks(
+    @Query(ValidationPipe) filterDTO: GetTaskFilterDTO,
+  ): Promise<Task[]> {
+    return await this.tasksService.getTasks(filterDTO);
+  }
 
-  //   return this.tasksService.getAllTasks();
-  // }
+  @Get('/:id')
+  getTaskById(@Param('id', ParseIntPipe) id: number): Promise<Task> {
+    return this.tasksService.getTaskById(id);
+  }
 
-  // @Get('/:id')
-  // getTaskById(@Param('id') id: string): TasksI {
-  //   return this.tasksService.getTaskById(id);
-  // }
+  @Post()
+  @UsePipes(ValidationPipe)
+  createTask(@Body() creteTaskDTO: CreateTaskDTO): Promise<Task> {
+    return this.tasksService.createTask(creteTaskDTO);
+  }
 
-  // @Post()
-  // @UsePipes(ValidationPipe)
-  // createTask(@Body() creteTaskDTO: CreateTaskDTO): TasksI {
-  //   return this.tasksService.createTask(creteTaskDTO);
-  // }
+  @Delete('/:id')
+  deleteTask(@Param('id', ParseIntPipe) id: number): Promise<void> {
+    return this.tasksService.deleteTask(id);
+  }
 
-  // @Delete('/:id')
-  // deleteTask(@Param('id') id: string): void {
-  //   this.tasksService.deleteTask(id);
-  // }
-
-  // @Patch('/:id/status')
-  // updateTask(
-  //   @Param('id') id: string,
-  //   @Body('status', TaskStatusValidationP) status: TaskStatusE,
-  // ): TasksI {
-  //   return this.tasksService.updateTask(id, status);
-  // }
+  @Patch('/:id/status')
+  updateTask(
+    @Param('id', ParseIntPipe) id: number,
+    @Body('status', TaskStatusValidationPipe) status: TaskStatusE,
+  ): Promise<Task> {
+    return this.tasksService.updateTask(id, status);
+  }
 }
