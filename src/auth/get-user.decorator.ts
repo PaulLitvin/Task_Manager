@@ -3,6 +3,7 @@ import { User } from './user.entity';
 
 export const GetUser = createParamDecorator(
   (data, req): User => {
-    return req;
+    // TODO Find out whi req has too many nested levels
+    return req.args[0].user;
   },
 );
